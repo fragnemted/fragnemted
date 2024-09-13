@@ -7,13 +7,20 @@
 
     <style>
       body {
-        background-color: rgb(30,20,20);
+        background-color: rgb(50,10,35);
         font_family: courier new;
         color: white;
+        margin-left: 20px;
       }
 
       h1, h2, h3 {
         text-align: center;
+        margin-right: 20px;
+      }
+
+      .clear {
+        background-color: rgba(255,255,255,0);
+        color: whitesmoke;
       }
       
     </style>
@@ -23,35 +30,86 @@
     <h1>= Blind Canvas Calc Test =</h1>
 
     <p>
-      Original Stats:
-      <label for="hp_ori"></label>
-      <input type="text" id="hp_ori" name="hp_ori" value="0" size="4" maxlength="3">
-      <label for="atk_ori"></label>
-      <input type="text" id="atk_ori" name="atk_ori" value="0" size="4" maxlength="3">
-      <label for="def_ori"></label>
-      <input type="text" id="def_ori" name="def_ori" value="0" size="4" maxlength="3">
-      <label for="spa_ori"></label>
-      <input type="text" id="spa_ori" name="spa_ori" value="0" size="4" maxlength="3">
-      <label for="spd_ori"></label>
-      <input type="text" id="spd_ori" name="spd_ori" value="0" size="4" maxlength="3">
-      <label for="spe_ori"></label>
-      <input type="text" id="spe_ori" name="spe_ori" value="0" size="4" maxlength="3">        
+      Original Stats:<br>
+      <input type="number" id="hp_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="atk_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="def_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spa_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spd_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spe_old" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <br><br>
+      New Stats: &nbsp&nbsp&nbsp <button type="button" onclick="setNewStats()">Set Stats</button><br>
+      <input type="number" id="hp_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="atk_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="def_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spa_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spd_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <input type="number" id="spe_new" placeholder=0 min=0 max=255 step=5 onchange="showCost();getTotalCost()">
+      <br><br>
+      Stat Cost:<br>
+      <textarea class=clear inputmode="number" id="hp_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
+      <textarea class=clear inputmode="number" id="atk_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
+      <textarea class=clear inputmode="number" id="def_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
+      <textarea class=clear inputmode="number" id="spa_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
+      <textarea class=clear inputmode="number" id="spd_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
+      <textarea class=clear inputmode="number" id="spe_cost" placeholder=0 min=0 max=255 rows=1 cols=4 disabled></textarea>
       <br>
-      New Stats:
-      <label for="hp_new"></label>
-      <input type="text" id="hp_new" name="hp_new" value="0" size="4" maxlength="3">
-      <label for="atk_new"></label>
-      <input type="text" id="atk_new" name="atk_new" value="0" size="4" maxlength="3">
-      <label for="def_new"></label>
-      <input type="text" id="def_new" name="def_new" value="0" size="4" maxlength="3">
-      <label for="spa_new"></label>
-      <input type="text" id="spa_new" name="spa_new" value="0" size="4" maxlength="3">
-      <label for="spd_new"></label>
-      <input type="text" id="spd_new" name="spd_new" value="0" size="4" maxlength="3">
-      <label for="spe_new"></label>
-      <input type="text" id="spe_new" name="spe_new" value="0" size="4" maxlength="3">
       <br>
+      Total: <span id="stat_tc">0</span>
     </p>
-    
+    <p>
+      Test: <span id="demo"></span>
+    </p>
+
+    <script>
+      //Start of Stat Cost Calculation
+      function setNewStats() {
+        hp_new.value = hp_old.value;
+        atk_new.value = atk_old.value;
+        def_new.value = def_old.value;
+        spa_new.value = spa_old.value;
+        spd_new.value = spd_old.value;
+        spe_new.value = spe_old.value;
+      }
+
+      function getStatCost(old_stat, new_stat) {
+        old_dum = old_stat.value;
+        new_dum = new_stat.value;
+        if (new_dum - old_dum < 0) {
+          stat_cost = 0;
+        } else if (new_dum > 100) {
+          if (old_dum > 100) {
+            stat_dum = 2*(new_dum - old_dum)/5;
+          } else if (old_dum > 70) {
+            stat_cost = 2*(new_dum - 100)/5 + (100 - old_dum)/5;
+          } else {
+            stat_cost = 2*(new_dum - 100)/5 + 6 + (70 - old_dum)/10;
+          }
+        } else if (new_dum > 70) {
+          if (old_dum > 70) {
+            stat_cost = (new_dum - old_dum)/5;
+          } else {
+            stat_cost = (new_dum - 70)/5 + (70 - old_dum)/10;
+          }
+        } else {
+          stat_cost = (new_dum - old_dum)/10;
+        }
+        return stat_cost;
+      }
+
+      function showCost() {
+        hp_cost.innerHTML = getStatCost(hp_old, hp_new);
+        atk_cost.innerHTML = getStatCost(atk_old, atk_new);
+        def_cost.innerHTML = getStatCost(def_old, def_new);
+        spa_cost.innerHTML = getStatCost(spa_old, spa_new);
+        spd_cost.innerHTML = getStatCost(spd_old, spd_new);
+        spe_cost.innerHTML = getStatCost(spe_old, spe_new);
+      }
+
+      function getTotalCost() {
+        stat_tc.innerHTML = Number(hp_cost.value) + Number(atk_cost.value) + Number(def_cost.value) + Number(spa_cost.value) + Number(spd_cost.value) + Number(spe_cost.value);
+      }
+      //End of Stat Cost Calculation
+    </script>
   </body>
 </html>
